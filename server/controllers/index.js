@@ -1,5 +1,8 @@
 // pull in our models. This will automatically load the index.js from that folder
 const models = require('../models');
+const express = require('express');
+const router = express.Router();
+const Dog = require('../models/Dog'); // Your Mongoose model
 
 // get the Cat model
 const { Cat } = models;
@@ -282,6 +285,58 @@ const notFound = (req, res) => {
     page: req.url,
   });
 };
+
+
+// Create a new dog
+router.post('/create', async (req, res) => {
+  const { name, breed, age } = req.body;
+
+  if (!name || !breed || !age) {
+    return res.render('page3', { error: 'All fields are required to create a dog.' });
+  }
+
+  try {
+    const dog = new Dog({ name, breed, age });
+    await dog.save();
+    res.render('page3', { success: 'Dog created successfully!' });
+  } catch (err) {
+    res.render('page3', { error: 'Error creating dog.' });
+  }
+});
+
+// Increase dog age by name
+router.post('/increase-age', async (req, res) => {
+  const { name } = req.body;
+
+  try {
+    const dog = await Dog.findOneAndUpdate(
+      { name },
+      { $inc: { age: 1 } },
+      { new: true }
+    );
+
+    if (!dog) {
+      return res.render('page3', { error: `Dog named "${name}" not found.` });
+    }
+
+    res.render('page3', { success: `Age of "${name}" increased to ${dog.age}.` });
+  } catch (err) {
+    res.render('page3', { error: 'Error updating dog age.' });
+  }
+});
+
+
+router.get('/page4', async (req, res) => {
+  try {
+    const dogs = await Dog.find({});
+    res.render('page4', { dogs });
+  } catch (err) {
+    res.status(500).send('Error retrieving dogs.');
+  }
+});
+
+
+module.exports = router;
 
 // export the relevant public controller functions
 module.exports = {

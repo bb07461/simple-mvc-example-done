@@ -14,5 +14,31 @@
   <a href="/">Home</a>
   <a href="/page1">Page 1</a>
   <a href="/page2">Page 2</a>
+
+  <h2>Create a New Dog</h2>
+<form action="/dogs/create" method="POST">
+  <label for="name">Name:</label>
+  <input type="text" name="name" required />
+  <label for="breed">Breed:</label>
+  <input type="text" name="breed" required />
+  <label for="age">Age:</label>
+  <input type="number" name="age" required />
+  <button type="submit">Create Dog</button>
+</form>
+
+<h2>Increase Dog's Age by Name</h2>
+<form action="/dogs/increase-age" method="POST">
+  <label for="name">Dog's Name:</label>
+  <input type="text" name="name" required />
+  <button type="submit">Increase Age</button>
+</form>
+
+{{#if error}}
+  <p style="color:red;">{{error}}</p>
+{{/if}}
+
+{{#if success}}
+  <p style="color:green;">{{success}}</p>
+{{/if}}
 </body>
 </html>
